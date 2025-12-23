@@ -7,23 +7,23 @@ pipeline {
     }
     
     environment {
-        SONAR_HOST_URL = 'http://13.236.148.80:9000/'
+        SONAR_HOST_URL = 'http://3.25.101.121:9000/'
         SONAR_AUTH_TOKEN = credentials('sonarqube')
         NVD_API_KEY           = credentials('NVD_API_KEY')
-        DOCKERHUB_REPO = "anushaakkena/trivyproject"
+        DOCKERHUB_REPO = "anushaakkena/mypocproject"
 
     }
 
     stages {
         stage('Git Checkout ') {
             steps {
-                git url: 'https://github.com/AnushaAkkena/POC-6.git', branch: 'main'
+                git url: 'https://github.com/AnushaAkkena/POC-1.git', branch: 'main'
             }
         }
         
-        stage('Build') {
+        stage('Code Compile') {
             steps {
-                    sh "mvn clean package"
+                    sh "mvn compile"
             }
         }
         
@@ -43,7 +43,11 @@ pipeline {
                 '''
                 }
             }
-        
+        stage('Maven Build') {
+            steps {
+                    sh "mvn clean compile"
+            }
+        }        
       stage('OWASP Dependency-Check') {
             steps {
                 dependencyCheck additionalArguments: "--scan . --format HTML --nvdApiKey ${env.NVD_API_KEY}", odcInstallation: 'DP'
